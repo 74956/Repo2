@@ -24,9 +24,8 @@ public class CompareModalsTest {
     @Test(description = "API 2.1")
     public void CheckCatsListStatusCode() {
         Response response = CatResponseBuilder.getCatModelResponse();
-        String contentType = response.contentType();
         assertThat("Status code is not 200 OK", response.getStatusCode(), Matchers.equalTo(StatusCodeAndMsg.OK.getCode()));
-        assertThat("Content-Type is not 'application/json'", contentType, Matchers.equalTo("application/json"));
+        assertThat("Content-Type is not 'application/json'", response.contentType(), Matchers.equalTo("application/json"));
     }
 
     @Test(description = "API 2.1")

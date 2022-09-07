@@ -5,11 +5,12 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum StatusCode {
+public enum StatusCodeAndMsg {
 
-    OK(200),
-    NOT_FOUND(404);
+    OK(200, "OK"),
+    NOT_FOUND(404, "Not Found");
 
     private final int code;
+    private final String msg;
 
 }

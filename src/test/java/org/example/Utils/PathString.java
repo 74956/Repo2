@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum PathString {
 
+    SITE_URL("https://catfact.ninja/"),
     CAT_PATH("facts"),
     CAT_PATH_FOR_RANDOM_SEARCH("fact"),
     BREED_PATH("breeds");

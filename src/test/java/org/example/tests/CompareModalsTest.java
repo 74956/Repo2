@@ -4,13 +4,13 @@ import io.restassured.response.Response;
 import org.example.StatusCodeAndMsg;
 import org.example.Utils.FilePath;
 import org.example.Utils.FileUtil;
+import org.example.Utils.PathString;
 import org.example.model.BreedCollectionModel;
 import org.example.model.BreedModel;
 import org.example.model.CatFactCollectionModel;
 import org.example.model.CatFactModel;
 import org.example.model.ErrorModel;
-import org.example.response.BreedResponseBuilder;
-import org.example.response.CatResponseBuilder;
+import org.example.response.CommonResponseService;
 import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
 
@@ -21,22 +21,24 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class CompareModalsTest {
 
+    private static final String CAT_PATH_WRONG_URL = "factttt";
+
     @Test(description = "API 2.1")
     public void CheckCatsListStatusCode() {
-        Response response = CatResponseBuilder.getCatModelResponse();
+        Response response = CommonResponseService.getModelResponse(PathString.CAT_PATH.getPath());
         assertThat("Status code is not 200 OK", response.getStatusCode(), Matchers.equalTo(StatusCodeAndMsg.OK.getCode()));
         assertThat("Content-Type is not 'application/json'", response.contentType(), Matchers.equalTo("application/json"));
     }
 
     @Test(description = "API 2.1")
     public void CheckRandomCatStatusCode() {
-        Response response = CatResponseBuilder.getRandomCatModelResponse();
+        Response response = CommonResponseService.getModelResponse(PathString.CAT_PATH_FOR_RANDOM_SEARCH.getPath());
         assertThat("Status code is not 200 OK", response.getStatusCode(), Matchers.equalTo(StatusCodeAndMsg.OK.getCode()));
     }
 
     @Test(description = "API 2.1")
     public void CheckCatModel() {
-        Response response = CatResponseBuilder.getCatModelWithQueryParam(Map.of("page", 1, "limit", 3));
+        Response response = CommonResponseService.getModelWithQueryParam(PathString.CAT_PATH.getPath(), Map.of("page", 1, "limit", 3));
         List<CatFactModel> actualCatsList = response.as(CatFactCollectionModel.class).getData();
         List<CatFactModel> expectedCatsList = FileUtil.convertToModel(FilePath.CATS_FILE_PATH.getFilePath(), CatFactModel.class);
         assertThat("Status code is not 200 OK", response.getStatusCode(), Matchers.equalTo(StatusCodeAndMsg.OK.getCode()));
@@ -45,13 +47,13 @@ public class CompareModalsTest {
 
     @Test(description = "API 2.1")
     public void CheckBreedStatusCode() {
-        Response response = BreedResponseBuilder.getBreedModelResponse();
+        Response response = CommonResponseService.getModelResponse(PathString.BREED_PATH.getPath());
         assertThat("Status code is not 200 OK", response.getStatusCode(), Matchers.equalTo(StatusCodeAndMsg.OK.getCode()));
     }
 
     @Test(description = "API 2.1")
     public void CheckBreedModel() {
-        Response response = BreedResponseBuilder.getBreedModelWithQueryParam(Map.of("page", 1, "limit", 3));
+        Response response = CommonResponseService.getModelWithQueryParam(PathString.BREED_PATH.getPath(), Map.of("page", 1, "limit", 3));
         List<BreedModel> actualBreedsList = response.as(BreedCollectionModel.class).getData();
         List<BreedModel> expectedBreedList = FileUtil.convertToModel(FilePath.BREED_FILE_PATH.getFilePath(), BreedModel.class);
         assertThat("Status code is not 200 OK", response.getStatusCode(), Matchers.equalTo(StatusCodeAndMsg.OK.getCode()));
@@ -60,7 +62,7 @@ public class CompareModalsTest {
 
     @Test(description = "API 2.1")
     public void CheckWrongCatUrlStatusCode() {
-        Response response = CatResponseBuilder.getWrongRandomCatModelResponse();
+        Response response = CommonResponseService.getModelResponse(CAT_PATH_WRONG_URL);
         ErrorModel errorModel = response.as(ErrorModel.class);
         assertThat("Status code is not 404 NOT_FOUND", response.getStatusCode(), Matchers.equalTo(StatusCodeAndMsg.NOT_FOUND.getCode()));
         assertThat("Error message is not 'Not Found'", errorModel.getMessage(), Matchers.equalTo(StatusCodeAndMsg.NOT_FOUND.getMsg()));
